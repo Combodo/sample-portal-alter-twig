@@ -1,52 +1,38 @@
 <?php
-//
-// iTop module definition file
-//
 
 SetupWebPage::AddModule(
-	__FILE__, // Path to the current file, all other file names are relative to the directory containing this file
-	'sample-portal-alter-twig/1.0.0',
-	array(
-		// Identification
-		//
-		'label' => 'Sample Portal (alter twig)',
-		'category' => 'business',
-
-		// Setup
-		//
-		'dependencies' => array(
-			'itop-portal/1.0.0'
-		),
-		'mandatory' => false,
-		'visible' => true,
-
-		// Components
-		//
-		'datamodel' => array(
-			'model.sample-portal-alter-twig.php'
-		),
-		'webservice' => array(
-			
-		),
-		'data.struct' => array(
-			// add your 'structure' definition XML files here,
-		),
-		'data.sample' => array(
-			// add your sample data XML files here,
-		),
-		
-		// Documentation
-		//
-		'doc.manual_setup' => '', // hyperlink to manual setup documentation, if any
-		'doc.more_information' => '', // hyperlink to more information, if any 
-
-		// Default settings
-		//
-		'settings' => array(
-			// Module specific settings go here, if any
-		),
-	)
+    __FILE__, // Path to the current file, all other file names are relative to the directory containing this file
+    'sample-portal-alter-twig/1.0.0', array(
+        // Identification
+        'label' => 'Twig alteration sample',
+        'category' => 'Portal',
+        // Setup
+        'dependencies' => array(
+            'itop-portal-base/1.0.0'
+        ),
+        'mandatory' => true,
+        'visible' => false,
+        // Components
+        'datamodel' => array(
+        ),
+        'webservice' => array(
+            //'webservices.sample-portal-alter-twig.php',
+        ),
+        'dictionary' => array(
+            //'fr.dict.sample-portal-alter-twig.php',
+        ),
+        'data.struct' => array(
+            //'data.struct.sample-portal-alter-twig.xml',
+        ),
+        'data.sample' => array(
+            //'data.sample.sample-portal-alter-twig.xml',
+        ),
+        // Documentation
+        'doc.manual_setup' => '',
+        'doc.more_information' => '',
+        // Default settings
+        'settings' => array(
+        ),
+    )
 );
-
-
 ?>
