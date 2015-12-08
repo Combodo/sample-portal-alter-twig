@@ -4,7 +4,7 @@
 		<module_design id="itop-portal" xsi:type="portal">
 			<properties>
 				<themes>
-                    <theme id="custom" _delta="define_if_not_exists">../sample-portal-alter-twig/custom.css</theme>
+                    <theme id="portal_customization" _delta="define_if_not_exists">../sample-portal-alter-twig/custom.css</theme>
                 </themes>
 				<templates>
                     <template id="layout" _delta="define_if_not_exists">./sample-portal-alter-twig/layout.html.twig</template>

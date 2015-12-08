@@ -8,12 +8,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block pPageTitle %}{{ 'Page:DefaultTitle'|dict_s }}{% endblock %}</title>
     {% block pPageStylesheets %}
-    <link href="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ app['combodo.portal.instance.conf'].properties.themes.bootstrap }}" rel="stylesheet">
-    <link href="{{ app['combodo.portal.instance.conf'].properties.themes.portal }}" rel="stylesheet">
-    {% if app['combodo.portal.instance.conf'].properties.themes.custom is defined %}
-        <link href="{{ app['combodo.portal.instance.conf'].properties.themes.custom }}" rel="stylesheet">
-    {% endif %}
+        <link href="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ app['combodo.portal.instance.conf'].properties.themes.bootstrap }}" rel="stylesheet">
+        <link href="{{ app['combodo.portal.instance.conf'].properties.themes.portal }}" rel="stylesheet">
+        {# Custom CSS that is supposed to do adjustment to the portal #}
+        {% if app['combodo.portal.instance.conf'].properties.themes.custom is defined %}
+            <link href="{{ app['combodo.portal.instance.conf'].properties.themes.custom }}" rel="stylesheet">
+        {% endif %}
+        {# Others CSS that will come after the theme/portal/custom, in an undefined order #}
+        {% if app['combodo.portal.instance.conf'].properties.themes.others is defined %}
+            {% for theme in app['combodo.portal.instance.conf'].properties.themes.others %}
+                <link href="{{ theme }}" rel="stylesheet">
+            {% endfor %}
+        {% endif %}
     {% endblock %}
     {% block pPageScripts %}
     <script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/jquery/jquery-1.11.3.min.js"></script>
