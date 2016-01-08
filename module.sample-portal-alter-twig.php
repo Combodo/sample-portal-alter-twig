@@ -4,7 +4,7 @@ SetupWebPage::AddModule(
     __FILE__, // Path to the current file, all other file names are relative to the directory containing this file
     'sample-portal-alter-twig/1.0.0', array(
     // Identification
-    'label' => 'Sample portal (Twig alteration)',
+    'label' => 'Sample portal (twig alteration)',
     'category' => 'Portal',
     // Setup
     'dependencies' => array(

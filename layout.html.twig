@@ -24,6 +24,9 @@
     {% endblock %}
     {% block pPageScripts %}
     <script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/jquery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="{{ app['combodo.absolute_url'] }}js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="{{ app['combodo.absolute_url'] }}js/form_handler.js"></script>
+    <script type="text/javascript" src="{{ app['combodo.absolute_url'] }}js/form_field.js"></script>
     <script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap/js/bootstrap.min.js"></script>
     {% endblock %}
 </head>
@@ -105,6 +108,23 @@
     <div class="modal fade" id="modal-for-all" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
+                <div class="content_loader">
+                    <div class="icon glyphicon glyphicon-refresh"></div>
+                    <div class="message">
+                        {{ 'Page:PleaseWait'|dict_s }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="page_overlay">
+        <div id="page_overlay_content">
+            <div class="content_loader">
+                <div class="icon glyphicon glyphicon-refresh"></div>
+                <div class="message">
+                    {{ 'Page:PleaseWait'|dict_s }}
+                </div>
             </div>
         </div>
     </div>
@@ -115,7 +135,7 @@
             // Hack to enable a same modal to load content from different urls
             $('body').on('hidden.bs.modal', '.modal', function () {
                 $(this).removeData('bs.modal');
-                $(this).find('.modal-content').html('<div class="modal-body modal-wait">{{ 'Page:PleaseWait'|dict_s }}</div>');
+                $(this).find('.modal-content').html('<div class="content_loader"><div class="icon glyphicon glyphicon-refresh"></div><div class="message">{{ 'Page:PleaseWait'|dict_s }}</div></div>');
             });
             
             /* Will not be used if we go with html response from ajax
