@@ -1,0 +1,24 @@
+body{
+	padding-top: 60px;
+}
+footer{
+	margin: 5em 0;
+}
+
+.navbar-nav .dropdown-menu a .glyphicon{
+	margin-right: 15px;
+}
+.navbar-header .navbar-search{
+	position: relative;
+	float: right;
+	margin-right: 15px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	padding: 9px 10px;
+	color: #FFF;
+	background-color: transparent;
+	border: none;
+}
+.navbar .searchbar-collapse{
+	margin-bottom: 8px;
+}
