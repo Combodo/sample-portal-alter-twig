@@ -1,16 +1,34 @@
 {# layout.html.twig #}
-{# Sample base layout to show how to alter the twig in order to have topbar nav #}
+{# Base layout #}
+
+{% if app['combodo.current_user'] is defined and app['combodo.current_user'] is not null %}
+	{% set bUserConnected = true %}
+	{% set sUserFullname = app['combodo.current_user'].Get('first_name') ~ ' ' ~ app['combodo.current_user'].Get('last_name') %}
+	{% set sUserEmail = app['combodo.current_user'].Get('email') %}
+	{% set sUserPhotoUrl = app['combodo.current_contact.photo_url'] %}
+{% else %}
+	{% set bUserConnected = false %}
+	{% set sUserFullname = '' %}
+	{% set sUserEmail = '' %}
+	{% set sUserPhotoUrl = app['combodo.portal.base.absolute_url'] ~ 'img/user-profile-default-256px.png' %}
+{% endif %}
+
 <!doctype html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{# This block can be used to add your own meta tags by extending the default template #}
+	{% block pPageExtraMetas %}
+	{% endblock %}
 	<title>{% block pPageTitle %}{% if sPageTitle is defined and sPageTitle is not null %}{{ sPageTitle }} - iTop{% else %}{{ 'Page:DefaultTitle'|dict_s }}{% endif %}{% endblock %}</title>
 	<link rel="shortcut icon" href="{{ app['combodo.absolute_url'] }}images/favicon.ico?itopversion=$ITOP_VERSION$" />
 	{% block pPageStylesheets %}
 		{# First bootstrap core, lib themes, then bootstrap theme, portal adjustements #}
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		{# - Bootstrap Datetime picker #}
+		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 		{# - Datatables #}
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet">
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
@@ -18,13 +36,17 @@
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/css/scroller.bootstrap.min.css" rel="stylesheet">
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/css/select.bootstrap.min.css" rel="stylesheet">
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/css/select.dataTables.min.css" rel="stylesheet">
+		{# - Font Combodo #}
+		<link href="{{ app['combodo.absolute_url'] }}css/font-combodo/font-combodo.css" rel="stylesheet">
+		{# - Font awesome #}
+		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 		{# - Misc libs #}
 		<link href="{{ app['combodo.portal.base.absolute_url'] }}lib/typeahead/css/typeaheadjs.bootstrap.css" rel="stylesheet">
 		<link href="{{ app['combodo.absolute_url'] }}css/magnific-popup.css" rel="stylesheet">
 		{# - Bootstrap theme #}
-		<link href="{{ app['combodo.portal.instance.conf'].properties.themes.bootstrap }}" rel="stylesheet">
+		<link href="{{ app['combodo.portal.instance.conf'].properties.themes.bootstrap }}" rel="stylesheet" id="css_bootstrap_theme">
 		{# - Portal adjustments for BS theme #}
-		<link href="{{ app['combodo.portal.instance.conf'].properties.themes.portal }}" rel="stylesheet">
+		<link href="{{ app['combodo.portal.instance.conf'].properties.themes.portal }}" rel="stylesheet" id="css_portal">
 		{# Custom CSS that is supposed to do adjustments to the portal #}
 		{% if app['combodo.portal.instance.conf'].properties.themes.custom is defined %}
 			<link href="{{ app['combodo.portal.instance.conf'].properties.themes.custom }}" rel="stylesheet">
@@ -43,6 +65,12 @@
 		<script type="text/javascript" src="{{ app['combodo.absolute_url'] }}js/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/latinise/latinise.min.js"></script>
+		{# Visible.js to check if an element is visible on screen #}
+		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/jquery-visible/js/jquery.visible.min.js"></script>
+		{# Base64.js #}
+		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/jquery-base64/js/jquery.base64.min.js"></script>
+		{# Moment.js #}
+		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/moment/js/moment.min.js"></script>
 		{# Datatables #}
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/js/dataTables.bootstrap.min.js"></script>
@@ -50,10 +78,13 @@
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/js/dataTables.responsive.min.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/js/dataTables.scroller.min.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/js/dataTables.select.min.js"></script>
+		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/datatables/js/datetime-moment.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}js/dataTables.accentNeutraliseForFilter.js"></script>
 		{# CKEditor files for HTML WYSIWYG #}
 		<script type="text/javascript" src="{{ app['combodo.absolute_url'] }}js/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.absolute_url'] }}js/ckeditor/adapters/jquery.js"></script>
+		{# Date-time picker for Bootstrap #}
+		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 		{# Typeahead files for autocomplete #}
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/typeahead/js/bloodhound.min.js"></script>
 		<script type="text/javascript" src="{{ app['combodo.portal.base.absolute_url'] }}lib/typeahead/js/typeahead.bundle.min.js"></script>
@@ -72,9 +103,9 @@
 </head>
 <body class="{% block pPageBodyClass %}{% endblock %}">
 	{% block pPageBodyWrapper %}
-	<div class="container">
 		{% block pNavigationWrapper %}
-		<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+		{# Topbar navigation menu for mobile screens #}
+		<nav class="navbar navbar-fixed-top navbar-default visible-xs" id="topbar" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -82,147 +113,150 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					{# Note : The search bar is disable for now. We might do a global search on the portal later. #}
-					{#<button type="button" class="navbar-search visible-xs" data-toggle="collapse" data-target="#searchbar">
-						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					</button>#}
-					<a class="navbar-brand" href="{{ app.url_generator.generate('p_home') }}">iTop</a>
+					<a class="navbar-brand pull-right" href="{{ app.url_generator.generate('p_home') }}">
+						{% if app['combodo.portal.instance.conf'].properties.logo is not null %}
+							<img src="{{ app['combodo.portal.instance.conf'].properties.logo }}" alt="{{ app['combodo.portal.instance.conf'].properties.name|dict_s }}" />
+						{% else %}
+							iTop
+						{% endif %}
+					</a>
+					<p class="navbar-text">
+						<a class="navbar-link user_infos" href="{{ app.url_generator.generate('p_user_profile_brick') }}">
+							<span class="user_photo" style="background-image: url('{{ sUserPhotoUrl }}');"></span>
+							<span class="user_fullname">{{ sUserFullname }}</span>
+						</a>
+					</p>
 				</div>
 				<div class="collapse navbar-collapse" id="navbar">
 					<ul class="nav navbar-nav">
-						{# Count of all the bricks #}
-						{% set iBrickCount = app['combodo.portal.instance.conf'].bricks|length %}
-						{# Current index among all the bricks #}
-						{% set iCurrentBrickIndex = 0 %}
-						{# Current index among visible bricks #}
-						{% set iCurrentVisibleBrickIndex = 0 %}
-						{# Count of brick displayed in the navigation menu #}
-						{% set iVisibleBrickCount = app['combodo.portal.instance.conf'].bricks_navigation_menu_count %}
-						{# Limit of brick to display in the navigation menu before being put in the dropdown menu #}
-						{% set iMaxVisibleBrickCount = 5 %}
-						{# Class for the dropdown menu, will allow to determine for which screen sizes to display it #}
-						{% set sDropdownMenuClass = '' %}
-						{# Visible bricks #}
-						{% for brick in app['combodo.portal.instance.conf'].bricks if iCurrentVisibleBrickIndex < iMaxVisibleBrickCount %}
-							{% set iCurrentBrickIndex = iCurrentBrickIndex + 1 %}
-							{% if brick.GetActive and brick.GetVisibleNavigationMenu and brick.GetRouteName is not null %}
-								{% set iCurrentVisibleBrickIndex = iCurrentVisibleBrickIndex + 1 %}
-								{# Setting BS classes to hide on smaller screens and display them later in the dropdown menu #}
-								{% set sBrickClass = '' %}
-								{% if iCurrentVisibleBrickIndex > iMaxVisibleBrickCount - 1 %}
-									{% set sBrickClass = sBrickClass ~ ' hidden-md' %}
-								{% endif %}
-								{% if iCurrentVisibleBrickIndex > iMaxVisibleBrickCount - 2 %}
-									{% set sBrickClass = sBrickClass ~ ' hidden-sm hidden-xs' %}
-								{% endif %}
-								<li class="{{ sBrickClass }} {% if oBrick is defined and brick.id == oBrick.id %}active{% endif %}">
-									<a href="{{ app.url_generator.generate(brick.GetRouteName, {sBrickId: brick.GetId}) }}{% if app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] is defined %}#{{ app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] }}{% endif %}" {% if app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] is defined %}{% for key, value in app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] %} {{ key }}="{{ value }}"{% endfor %}{% endif %} {% if brick.GetModal %}data-toggle="modal" data-target="#modal-for-all"{% endif %}>
-										{{ brick.GetTitle|dict_s }}
-									</a>
-								</li>
-							{% endif %}
-						{% endfor %}
-						{# Hidden extras bricks #}
-						{% if iVisibleBrickCount > iMaxVisibleBrickCount %}
-							{% set sDropdownMenuClass = sDropdownMenuClass ~ ' visible-lg' %}
-						{% else %}
-							{% set sDropdownMenuClass = sDropdownMenuClass ~ ' hidden-lg' %}
-						{% endif %}
-						{% if iVisibleBrickCount > iMaxVisibleBrickCount - 1 %}
-							{% set sDropdownMenuClass = sDropdownMenuClass ~ ' visible-md' %}
-						{% else %}
-							{% set sDropdownMenuClass = sDropdownMenuClass ~ ' hidden-md' %}
-						{% endif %}
-						{% if iVisibleBrickCount > iMaxVisibleBrickCount - 2 %}
-							{% set sDropdownMenuClass = sDropdownMenuClass ~ ' visible-sm visible-xs' %}
-						{% else %}
-							{% set sDropdownMenuClass = sDropdownMenuClass ~ ' hidden-sm hidden-xs' %}
-						{% endif %}
-						{% for brick in app['combodo.portal.instance.conf'].bricks|slice(iCurrentBrickIndex - 2, iBrickCount) %}
-							{% set iCurrentBrickIndex = iCurrentBrickIndex + 1 %}
-							{% if brick.GetActive and brick.GetVisibleNavigationMenu and brick.GetRouteName is not null %}
-								{# We build the dropdown menu there instead of before the loop because the remaining bricks could be have their bVisibleNavigationMenu set to false, which would result in an empty dropdown menu #}
-								{% if loop.first %}
-									<li class="dropdown {{ sDropdownMenuClass }}">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="extrabricksmenu">
-											Plus
-											<span class="caret"></span>
+						{% block pNavigationTopBricks %}
+							<li class="{% if oBrick is not defined %}active{% endif %}">
+								<a href="{{ app.url_generator.generate('p_home') }}">
+									<span class="brick_icon fa fa-home fa-2x"></span>
+									{{ 'Page:Home'|dict_s }}
+								</a>
+							</li>
+							{% for brick in app['combodo.portal.instance.conf'].bricks_ordering.navigation_menu %}
+								{% if brick.GetActive and brick.GetVisibleNavigationMenu and brick.GetRouteName is not null %}
+									<li class="{% if oBrick is defined and brick.id == oBrick.id %}active{% endif %}">
+										<a href="{{ app.url_generator.generate(brick.GetRouteName, {sBrickId: brick.GetId}) }}{% if app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] is defined %}#{{ app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] }}{% endif %}" {% if app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] is defined %}{% for key, value in app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] %} {{ key }}="{{ value }}"{% endfor %}{% endif %} {% if brick.GetModal %}data-toggle="modal" data-target="#modal-for-all"{% endif %}>
+											<span class="brick_icon {{ brick.GetDecorationClassNavigationMenu }}"></span>
+											{{ brick.GetTitleNavigationMenu|dict_s }}
 										</a>
-										<ul class="dropdown-menu" aria-labelledby="extrabricksmenu">
-								{% endif %}
-									{% set sBrickClass = '' %}
-									{% set iCurrentBrickThrottle = iMaxVisibleBrickCount - (iCurrentBrickIndex-iCurrentVisibleBrickIndex) %}
-									{% if iCurrentBrickThrottle > 0 and iCurrentBrickThrottle <= 1 %}
-										{% set sBrickClass = sBrickClass ~ ' visible-md' %}
-									{% endif %}
-									{% if iCurrentBrickThrottle > 0 and iCurrentBrickThrottle <= 2 %}
-										{% set sBrickClass = sBrickClass ~ ' visible-sm visible-xs' %}
-									{% endif %}
-											<li class="{{ sBrickClass }} {% if oBrick is defined and brick.id == oBrick.id %}active{% endif %}">
-												<a href="{{ app.url_generator.generate(brick.GetRouteName, {sBrickId: brick.GetId}) }}{% if app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] is defined %}#{{ app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] }}{% endif %}" {% if app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] is defined %}{% for key, value in app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] %} {{ key }}="{{ value }}"{% endfor %}{% endif %} {% if brick.GetModal %}data-toggle="modal" data-target="#modal-for-all"{% endif %}>
-													{{ brick.GetTitle|dict_s }}
-												</a>
-											</li>
-								{% if loop.last %}
-										</ul>
 									</li>
 								{% endif %}
-							{% endif %}
-						{% endfor %}
-						{# Note : The search bar is disable for now. We might do a global search on the portal later. #}
-						{#<li class="visible-sm">
-							<a class="navbar-search" data-toggle="collapse" data-target="#searchbar">
-								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-							</a>
-						</li>#}
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						{% if app['combodo.current_user'] is defined and app['combodo.current_user'] is not null %}
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="usermenu">
-								{{ app['combodo.current_user'].Get('first_name') }} {{ app['combodo.current_user'].Get('last_name') }}
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu" aria-labelledby="usermenu">
-								<li><a href="{{ app.url_generator.generate('p_user_profile_brick') }}"><span class="glyphicon glyphicon-user"></span>{{ 'Brick:Portal:UserProfile:Navigation:Dropdown:MyProfil'|dict_s }}</a></li>
-								{% for aPortal in app['combodo.portal.instance.conf'].portals %}
-									{% if aPortal.id != app['combodo.portal.instance.conf'].properties.id %}
-										{% set sGlyphiconClass = (aPortal.id == 'backoffice') ? 'glyphicon-list-alt' : 'glyphicon-new-window' %}
-										<li><a href="{{ aPortal.url }}" target="_blank"><span class="glyphicon {{ sGlyphiconClass }}"></span>{{ aPortal.label|dict_s }}</a></li>
-									{% endif %}
-								{% endfor %}
-								{# We display the separator only if the user has more then 1 portal. Meaning default portal + console or several portal at least #}
-								{% if app['combodo.portal.instance.conf'].portals|length > 1 %}
-									<li role="separator" class="divider"></li>
+							{% endfor %}
+						{% endblock %}
+						{% if bUserConnected %}
+							<li role="separator" class="divider"></li>
+							<li><a href="{{ app.url_generator.generate('p_user_profile_brick') }}"><span class="brick_icon fa fa-user fa-2x fa-fw"></span>{{ 'Brick:Portal:UserProfile:Navigation:Dropdown:MyProfil'|dict_s }}</a></li>
+							{% for aPortal in app['combodo.portal.instance.conf'].portals %}
+								{% if aPortal.id != app['combodo.portal.instance.conf'].properties.id %}
+									{% set sIconClass = (aPortal.id == 'backoffice') ? 'fa-list-alt' : 'fa-external-link' %}
+									<li><a href="{{ aPortal.url }}" target="_blank"><span class="brick_icon fa {{ sIconClass }} fa-2x fa-fw"></span>{{ aPortal.label|dict_s }}</a></li>
 								{% endif %}
-								<li><a href="{{ app['combodo.absolute_url'] }}pages/logoff.php"><span class="glyphicon glyphicon-log-out"></span>{{ 'Brick:Portal:UserProfile:Navigation:Dropdown:Logout'|dict_s }}</a></li>
-							</ul>
-						</li>
+							{% endfor %}
+							{# We display the separator only if the user has more then 1 portal. Meaning default portal + console or several portal at least #}
+							{% if app['combodo.portal.instance.conf'].portals|length > 1 %}
+								<li role="separator" class="divider"></li>
+							{% endif %}
+							<li><a href="{{ app['combodo.absolute_url'] }}pages/logoff.php"><span class="brick_icon fa fa-sign-out fa-2x fa-fw"></span>{{ 'Brick:Portal:UserProfile:Navigation:Dropdown:Logout'|dict_s }}</a></li>
 						{% endif %}
 					</ul>
-					{# Note : The search bar is disable for now. We might do a global search on the portal later. #}
-					{#<form class="navbar-form navbar-right visible-md visible-lg" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Rechercher" />
-						</div>
-					</form>#}
 				</div>
-				{# Note : The search bar is disable for now. We might do a global search on the portal later. #}
-				{#<div class="collapse searchbar-collapse hidden-md hidden-lg" id="searchbar">
-					<input type="text" class="form-control" placeholder="Rechercher" />
-				</div>#}
+			</div>
+		</nav>
+		
+		{# Top navigation menu for normal screens #}
+		<nav class="navbar navbar-fixed-top navbar-inverse hidden-xs" id="sidebar" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand pull-right" href="{{ app.url_generator.generate('p_home') }}">
+						{% if app['combodo.portal.instance.conf'].properties.logo is not null %}
+							<img src="{{ app['combodo.portal.instance.conf'].properties.logo }}" alt="{{ app['combodo.portal.instance.conf'].properties.name|dict_s }}" />
+						{% else %}
+							iTop
+						{% endif %}
+					</a>
+					<p class="navbar-text">
+						<a class="navbar-link user_infos" href="{{ app.url_generator.generate('p_user_profile_brick') }}">
+							<span class="user_photo" style="background-image: url('{{ sUserPhotoUrl }}');"></span>
+							<span class="user_fullname">{{ sUserFullname }}</span>
+						</a>
+					</p>
+				</div>
+				<div class="collapse navbar-collapse" id="navbar">
+					<ul class="nav navbar-nav navbar-right">
+							<li class="{% if oBrick is not defined %}active{% endif %}">
+								<a href="{{ app.url_generator.generate('p_home') }}">
+									<span class="brick_icon fa fa-home fa-2x"></span>
+									{{ 'Page:Home'|dict_s }}
+								</a>
+							</li>
+							{% set iCurrentBrickIndex = 0 %}
+							{% set iDisplayedItems = 1 %}{# 1 because of Home #}
+							{% set iMaxDisplayedItems = 1 %}
+							{% for brick in app['combodo.portal.instance.conf'].bricks_ordering.navigation_menu and iDisplayedItems < iMaxDisplayedItems %}
+								{% if brick.GetActive and brick.GetVisibleNavigationMenu and brick.GetRouteName is not null %}
+									<li class="{% if oBrick is defined and brick.id == oBrick.id %}active{% endif %}">
+										<a href="{{ app.url_generator.generate(brick.GetRouteName, {sBrickId: brick.GetId}) }}{% if app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] is defined %}#{{ app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] }}{% endif %}" {% if app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] is defined %}{% for key, value in app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] %} {{ key }}="{{ value }}"{% endfor %}{% endif %} {% if brick.GetModal %}data-toggle="modal" data-target="#modal-for-all"{% endif %}>
+											<span class="brick_icon {{ brick.GetDecorationClassNavigationMenu }}"></span>
+											{{ brick.GetTitleNavigationMenu|dict_s }}
+										</a>
+									</li>
+									{% set iDisplayedItems = iDisplayedItems + 1 %}
+								{% endif %}
+								{% set iCurrentBrickIndex = iCurrentBrickIndex + 1 %}
+							{% endfor %}
+							
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+									{{ 'Portal:Menu:Dropdown:Others'|dict_s }}
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									{% for brick in app['combodo.portal.instance.conf'].bricks_ordering.navigation_menu|slice(iCurrentBrickIndex) %}
+										{% if brick.GetActive and brick.GetVisibleNavigationMenu and brick.GetRouteName is not null %}
+											<li class="{% if oBrick is defined and brick.id == oBrick.id %}active{% endif %}">
+												<a href="{{ app.url_generator.generate(brick.GetRouteName, {sBrickId: brick.GetId}) }}{% if app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] is defined %}#{{ app['combodo.portal.instance.routes'][brick.GetRouteName]['hash'] }}{% endif %}" {% if app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] is defined %}{% for key, value in app['combodo.portal.instance.routes'][brick.GetRouteName]['navigation_menu_attr'] %} {{ key }}="{{ value }}"{% endfor %}{% endif %} {% if brick.GetModal %}data-toggle="modal" data-target="#modal-for-all"{% endif %}>
+													<span class="brick_icon {{ brick.GetDecorationClassNavigationMenu }}"></span>
+													{{ brick.GetTitleNavigationMenu|dict_s }}
+												</a>
+											</li>
+										{% endif %}
+										{% set iCurrentBrickIndex = iCurrentBrickIndex + 1 %}
+									{% endfor %}
+									
+									{% if bUserConnected %}
+										<li role="separator" class="divider"></li>
+										<li><a href="{{ app.url_generator.generate('p_user_profile_brick') }}"><span class="brick_icon fa fa-user fa-2x fa-fw"></span>{{ 'Brick:Portal:UserProfile:Navigation:Dropdown:MyProfil'|dict_s }}</a></li>
+										{% for aPortal in app['combodo.portal.instance.conf'].portals %}
+											{% if aPortal.id != app['combodo.portal.instance.conf'].properties.id %}
+												{% set sIconClass = (aPortal.id == 'backoffice') ? 'fa-list-alt' : 'fa-external-link' %}
+												<li><a href="{{ aPortal.url }}" target="_blank"><span class="brick_icon fa {{ sIconClass }} fa-2x fa-fw"></span>{{ aPortal.label|dict_s }}</a></li>
+											{% endif %}
+										{% endfor %}
+										{% if app['combodo.portal.instance.conf'].portals|length > 1 %}
+											<li role="separator" class="divider"></li>
+										{% endif %}
+										<li><a href="{{ app['combodo.absolute_url'] }}pages/logoff.php"><span class="brick_icon fa fa-sign-out fa-2x fa-fw"></span>{{ 'Brick:Portal:UserProfile:Navigation:Dropdown:Logout'|dict_s }}</a></li>
+									{% endif %}
+								</ul>
+							</li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 		{% endblock %}
 		
 		{% block pMainWrapper %}
 		<div class="container-fluid" id="main-wrapper">
-			<section class="row row-eq-height-sm" id="main-header">
+			<section class="row" id="main-header">
 				{% block pMainHeader %}
 				{% endblock %}
 			</section>
-			
-			<section class="row row-eq-height-sm" id="main-content">
+
+			<section class="row" id="main-content">
 				{% block pMainContent %}
 				{% endblock %}
 			</section>
@@ -234,11 +268,39 @@
 			<a href="http://www.combodo.com">iTop &copy; {{ "now"|date('Y') }}</a>
 			{% endblock %}
 		</footer>
-	</div>
 	
-	<div class="modal fade" id="modal-for-all" role="dialog">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
+		<div class="modal fade" id="modal-for-all" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="content_loader">
+						<div class="icon glyphicon glyphicon-refresh"></div>
+						<div class="message">
+							{{ 'Page:PleaseWait'|dict_s }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>					
+		<div class="modal fade" id="modal-for-alert" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Portal:Button:Close'|dict_s }}"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert">
+						</div>
+						<div class="text-right">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">{{ 'Portal:Button:Close'|dict_s }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="page_overlay" class="global_overlay">
+			<div class="overlay_content">
 				<div class="content_loader">
 					<div class="icon glyphicon glyphicon-refresh"></div>
 					<div class="message">
@@ -247,55 +309,50 @@
 				</div>
 			</div>
 		</div>
-	</div>					
-	<div class="modal fade" id="modal-for-alert" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Portal:Button:Close'|dict_s }}"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title"></h4>
-				</div>
-				<div class="modal-body">
-					<div class="alert">
-					</div>
-					<div class="text-right">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Portal:Button:Close'|dict_s }}</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div id="page_overlay" class="global_overlay">
-		<div class="overlay_content">
-			<div class="content_loader">
-				<div class="icon glyphicon glyphicon-refresh"></div>
-				<div class="message">
-					{{ 'Page:PleaseWait'|dict_s }}
-				</div>
-			</div>
-		</div>
-	</div>
 	{% endblock %}
 	
 	{% block pPageLiveScripts %}
 		<script type="text/javascript">
+			var GetAbsoluteUrlAppRoot = function()
+			{
+				return '{{ app['combodo.absolute_url'] }}';
+			};
 			var addParameterToUrl = function(sUrl, sParamName, sParamValue)
 			{
 				sUrl += (sUrl.split('?')[1] ? '&':'?') + sParamName + '=' + sParamValue;
 				return sUrl;
 			};
-		
+			var contentLoaderTemplate = '<div class="content_loader"><div class="icon glyphicon glyphicon-refresh"></div><div class="message">{{ 'Page:PleaseWait'|dict_s }}</div></div>';
+			
 			$(document).ready(function(){
 				{% block pPageReadyScripts %}
 					// Hack to enable a same modal to load content from different urls
 					$('body').on('hidden.bs.modal', '.modal#modal-for-all', function () {
 						$(this).removeData('bs.modal');
-						$(this).find('.modal-content').html('<div class="content_loader"><div class="icon glyphicon glyphicon-refresh"></div><div class="message">{{ 'Page:PleaseWait'|dict_s }}</div></div>');
+						$(this).find('.modal-content').html(contentLoaderTemplate);
+					});
+					// Hack to enable multiple modals by making sure the .modal-open class is set to the <body> when there is at least one modal open left
+					$('body').on('hidden.bs.modal', function () {
+						if($('.modal.in').length > 0)
+						{
+							$('body').addClass('modal-open');
+						}
 					});
 					// Hide tooltips when a modal is opening, otherwise it might be overlapping it
-					$('body').on('show.bs.modal', function (event) {
-						$(this).find('[data-toggle*="tooltip"]').tooltip('hide');
+					$('body').on('show.bs.modal', function () {
+						$(this).find('.tooltip.in').tooltip('hide');
+					});
+					// Display a error message on modal if the content could not be loaded.
+					// Note : As of now, we can't display a more detailled message based on the response because Bootstrap doesn't pass response data with the loaded event.
+					$('body').on('loaded.bs.modal', function (oEvent) {
+						var sModalContent = $(oEvent.target).find('.modal-content').html();
+						
+						if( (sModalContent === '') || (sModalContent.replace(/[\n\r\t]+/g, '') === contentLoaderTemplate) )
+						{
+							$(oEvent.target).find('.modal-content').html($('#modal-for-alert .modal-content').html());
+							$(oEvent.target).find('.modal-content .modal-header .modal-title').text('{{ 'Error:HTTP:500'|dict_s }}');
+							$(oEvent.target).find('.modal-content .modal-body .alert').addClass('alert-danger').text('{{ 'Error:XHR:Fail'|dict_s }}');
+						}
 					});
 				{% endblock %}
 			});

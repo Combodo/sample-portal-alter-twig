@@ -1,24 +1,214 @@
 body{
-	padding-top: 60px;
-}
-footer{
-	margin: 5em 0;
+	padding-top: 70px;
 }
 
-.navbar-nav .dropdown-menu a .glyphicon{
-	margin-right: 15px;
+footer{
+	margin-top: 40px;
 }
-.navbar-header .navbar-search{
-	position: relative;
-	float: right;
-	margin-right: 15px;
-	margin-top: 3px;
-	margin-bottom: 3px;
-	padding: 9px 10px;
-	color: #FFF;
-	background-color: transparent;
-	border: none;
+
+#page_overlay{
+	display: none;
 }
-.navbar .searchbar-collapse{
+
+.navbar-fixed-top .navbar-header {
+    box-shadow: none;
+}
+
+.navbar .navbar-brand > img{
+	max-height: 100%;
+}
+
+@media (min-width: 768px){
+	.navbar-nav.nav{
+		line-height: 2.2em;
+	}
+	.navbar-nav > li > a{
+		padding-top: 10px;
+		padding-bottom: 10px;
+		line-height: inherit;
+	}
+	.navbar-nav > li > a:hover {
+		padding-left: 15px;
+		transition: none;
+	}
+	
+	.brick_icon {
+		font-size: 1.0em;
+	}
+	
+	#main-header-title {
+		float: left;
+		margin-bottom: 0px;
+		min-height: 6em;
+		text-align: left;
+	}
+	#main-header-actions {
+		float: right;
+		margin-bottom: 0px;
+	}
+}
+
+/*****************/
+/* Home settings */
+/*****************/
+.home #main-wrapper{
+	padding-top: 15px;
+}
+
+.home .tile{
+	display: block;
 	margin-bottom: 8px;
+	padding: 0em 1em;
+	min-height: 4em;
+	background-color: #FFF;
+    background-image: none;
+    border: none;
+	border-radius: 0px;
+    text-align: center;
+	text-decoration: none;
+	white-space: normal;
+	line-height: 4em;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+.home .tile .tile_decoration{
+	position: absolute;
+	top: 0.3em;
+	left: 2.5em;
+}
+.home .tile .tile_title{
+	font-weight: bold;
+	color: #333;
+}
+.home .tile .tile_description{
+	display: none;
+	color: #555555;
+}
+@media (min-width: 768px) {
+	.home .tile{
+		display: block;
+		margin-bottom: 25px;
+		padding: 40px 40px 30px 40px;
+		min-height: 10em;
+		text-align: left;
+		transition: all 0.2s linear;
+	}
+	.home .tile:hover{
+		box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.10);
+	}
+	.home .tile .tile_decoration{
+		display: block;
+		position: relative;
+		float: left;
+		top: 1.5em;
+		left: initial;
+		margin: 0px 30px 15px 0px;
+	}
+	.home .tile .tile_body{
+		display: block;
+		padding-left: 4.3em;
+		text-align: left;
+		line-height: 1.5em;
+	}
+	.home .tile .tile_title{
+		margin-bottom: 1em;
+		font-size: 1.0em;
+	}
+	.home .tile .tile_description{
+		display: block;
+		text-align: left;
+	}
+}
+@media (min-width: 992px) {
+	.home .tile{
+		min-height: 14em;
+		padding: 30px 40px 30px 40px;
+	}
+	.home .tile .tile_decoration > span.icon{
+		font-size: 4em;
+	}
+	.home .tile .tile_body{
+		padding-left: 6.3em;
+	}
+	.home .tile .tile_title{
+		font-size: 1.4em;
+	}
+	.home .tile .tile_description{
+		font-size: 1.2em;
+	}
+}
+@media (min-width: 1200px) {
+	.home .tile{
+		margin-bottom: 40px;
+		min-height: 15em;
+		padding: 40px 50px 30px 50px;
+	}
+	.home .tile .tile_decoration{
+		margin: 0px 40px 15px 0px;
+		top: 1.5em;
+	}
+	.home .tile .tile_decoration > span.icon{
+		font-size: 6em;
+	}
+	.home .tile .tile_body{
+		padding-left: 9.1em;
+	}
+	.home .tile .tile_title{
+		font-size: 1.5em;
+	}
+	.home .tile .tile_description{
+		font-size: 1.2em;
+	}
+}
+
+/**********************/
+/* Brick user profile */
+/**********************/
+#user-profile-wrapper .user_profile_picture .content_loader{
+	position: absolute;
+	z-index: 1;
+    top: 0;
+    left: 0;
+    padding-top: 4em;
+    width: 100%;
+    height: 100%;
+	text-align: center;
+	color: white;
+    background-color: black;
+    opacity: 0.5;
+}
+#user-profile-wrapper .user_profile_picture .preview{
+	display: inline-block;
+	position: relative;
+	max-width: 175px;
+	max-height: 175px;
+	overflow: hidden;
+}
+#user-profile-wrapper .user_profile_picture .preview img{
+	max-width: 100%;
+	max-height: 100%;
+}
+#user-profile-wrapper .user_profile_picture .actions{
+	display: inline-block;
+	vertical-align: top; /*middle;*/
+	margin-left: 5px;
+}
+#user-profile-wrapper .user_profile_picture .actions .btn{
+	display: block;
+	position: relative;
+	margin-bottom: 10px;
+}
+#user-profile-wrapper .user_profile_picture .actions .btn:last-child{
+	margin-bottom: 0px;
+}
+#user-profile-wrapper .user_profile_picture .actions .btn.btn_edit{
+	overflow: hidden;
+}
+#user-profile-wrapper .user_profile_picture .actions .btn.btn_edit input{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
 }

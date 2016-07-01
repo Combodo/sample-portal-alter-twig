@@ -4,9 +4,11 @@
 		<module_design id="itop-portal" xsi:type="portal">
 			<properties>
 				<themes>
-                    <theme id="portal_customization" _delta="define_if_not_exists">../sample-portal-alter-twig/template.css</theme>
+                    <theme id="bootstrap" _delta="define_if_not_exists">./sample-portal-alter-twig/bootstrap-theme-simplex.min.css</theme>
+                    <theme id="portal" _delta="define_if_not_exists">./sample-portal-alter-twig/template.css</theme>
                 </themes>
 				<templates>
+                    <template id="home" _delta="define_if_not_exists">./sample-portal-alter-twig/home.html.twig</template>
                     <template id="layout" _delta="define_if_not_exists">./sample-portal-alter-twig/layout.html.twig</template>
                 </templates>
 			</properties>
